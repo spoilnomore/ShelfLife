@@ -9,6 +9,7 @@ run: stop build
 	-p 80:8081 \
 	-p 3000:3000 \
 	-v ${CURDIR}/uploads:/app/uploads \
+	-e CHOKIDAR_USEPOLLING=true \
 	--network=spoilnomore \
 	-d shelflife
 	make logs
@@ -16,10 +17,11 @@ else
 run: stop build
 	-docker network create spoilnomore
 	docker run \
-	-p 8080:8081 \
+	-p 8080:8080 \
 	-p 3000:3000 \
 	-v ${CURDIR}:/app \
-	--network=spoilnomore \
+	-e CHOKIDAR_USEPOLLING=true \
+	-e HOST=0.0.0.0 \
 	-d shelflife
 	make logs
 endif

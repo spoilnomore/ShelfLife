@@ -16,11 +16,7 @@ RUN npm i -g @vue/cli-service
 RUN npm i -g nodemon
 RUN npm i -g @vue/cli-plugin-babel
 
-# Copy the rest of the application into the working directory
-COPY . .
 
-# Expose port 8080 for the Vue.js server
-EXPOSE 8080 3000
 
 # Command to start the Vue.js server
 CMD ["npm", "run", "serve"]
