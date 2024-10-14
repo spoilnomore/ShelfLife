@@ -1,0 +1,55 @@
+diff --git a/db/Dockerfile b/db/Dockerfile
+new file mode 100644
+index 0000000..47a8a25
+--- /dev/null
++++ b/db/Dockerfile
+@@ -0,0 +1,13 @@
++# Use the official Docker Hub Postgres image
++FROM postgres:latest
++
++# Set environment variables
++ENV POSTGRES_USER pantryowner
++ENV POSTGRES_PASSWORD spoilnomore
++ENV POSTGRES_DB shelflife
++
++# Copy the init-db script into the Docker image
++COPY init-db.sh /docker-entrypoint-initdb.d/
++
++# Make the script executable
++RUN chmod +x /docker-entrypoint-initdb.d/init-db.sh
+\ No newline at end of file
+diff --git a/db/Makefile b/db/Makefile
+new file mode 100644
+index 0000000..69bb23e
+--- /dev/null
++++ b/db/Makefile
+@@ -0,0 +1,16 @@
++run: stop
++    -docker network create spoilnomore
++    docker build -t shelfdb-image .
++    docker run --name shelfdb -v shelfdb-data:/var/lib/postgresql/data \
++    --network=spoilnomore \
++    -p 5432:5432 -d shelfdb-image
++
++stop down:
++    -docker stop shelfdb
++    -docker rm shelfdb
++
++shell:
++    docker exec -it shelfdb bash
++
++logs:
++    docker logs shelfdb
+\ No newline at end of file
+diff --git a/db/init-db.sh b/db/init-db.sh
+new file mode 100644
+index 0000000..fc8f83c
+--- /dev/null
++++ b/db/init-db.sh
+@@ -0,0 +1,6 @@
++#!/bin/bash
++set -e
++
++psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
++    ALTER USER pantryowner WITH PASSWORD 'spoilnomore';
++EOSQL
