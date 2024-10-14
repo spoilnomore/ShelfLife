@@ -36,6 +36,7 @@
 
     <!-- Dummy Data Table -->
     <b-table striped hover :items="foods" :fields="fields"></b-table>
+    <router-view @add-food="addFood" :foods="foods" />
   </div>
 </template>
 
