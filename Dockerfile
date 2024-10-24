@@ -16,6 +16,7 @@ RUN npm i -g @vue/cli-service
 RUN npm i -g nodemon
 RUN npm i -g @vue/cli-plugin-babel
 RUN npm i -g @vue/cli-plugin-eslint
+RUN npm i -g @babel/preset-env
 
 
 # Command to start the Vue.js server
