@@ -6,4 +6,7 @@ class User(db.Model):
     username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     google_id = db.Column(db.String(4000), unique=True, nullable=False)
-    household_name = db.Column(db.String(255), nullable=True)
+    household_id = db.Column(db.Integer, db.ForeignKey('households.id'), nullable=True)
+
+    # Define relationship to access household details if needed
+    household = db.relationship('Household', backref='members', lazy=True)
