@@ -1,5 +1,5 @@
 run: stop
-	-docker network create spoilnomore
+	-@docker network create spoilnomore > /dev/null 2>&1 || true
 	docker build -t shelfdb-image .
 	docker run --name shelfdb -v shelfdb-data:/var/lib/postgresql/data \
 	--network=spoilnomore \

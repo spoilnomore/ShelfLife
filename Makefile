@@ -4,7 +4,7 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
 run: stop build
-	- docker network create spoilnomore > /dev/null 2>&1
+	-@docker network create spoilnomore > /dev/null 2>&1 || true
 	docker run \
 		-p 80:8081 \
 		-p 3000:3000 \

@@ -8,13 +8,13 @@ PORT = 8081
 
 
 run: stop build
-	-docker network create $(DOCKER_NETWORK)
+	-@docker network create $(DOCKER_NETWORK) > /dev/null 2>&1 || true
 	docker run --name $(APP_NAME) -p $(PORT):8081 --network=$(DOCKER_NETWORK) -d $(DOCKER_IMAGE)
 
 build:
 	docker build -t $(DOCKER_IMAGE) .
 
-stop:
+stop down:
 	-docker stop $(APP_NAME)
 	-docker rm $(APP_NAME)
 

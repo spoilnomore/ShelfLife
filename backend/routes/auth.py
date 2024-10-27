@@ -8,7 +8,6 @@ auth = Blueprint('auth', __name__)
 @auth.route('/check-user', methods=['POST', 'OPTIONS'])
 def check_user():
     if request.method == 'OPTIONS':
-        # This is a preflight request, we just need to return an empty response
         return '', 200
 
     data = request.json
@@ -18,17 +17,24 @@ def check_user():
     # Check if the user exists
     user = User.query.filter_by(google_id=google_id).first()
     if not user:
-        # Respond back to the frontend to ask for more information
         return jsonify({'isNewUser': True})
     
-    # Return existing user data
+    # If user exists, join with the household table to get household name
+    household_name = None
+    if user.household_id:
+        household = Household.query.filter_by(id=user.household_id).first()
+        if household:
+            household_name = household.household_name
+
+    # Return existing user data, including the household name if it exists
     return jsonify({'user': {
         'id': user.id,
         'username': user.username,
         'email': user.email,
         'google_id': user.google_id,
-        'household_name': user.household_name
+        'household_name': household_name
     }, 'isNewUser': False})
+
 
 
 @auth.route('/create-user', methods=['POST'])
