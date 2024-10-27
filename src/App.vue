@@ -1,6 +1,12 @@
 <template>
   <div id="app" :class="theme">
-    <b-navbar toggleable="lg" :style="{ backgroundColor: `var(--${theme}-navbar-background)`, color: `var(--${theme}-navbar-text-color)` }">
+    <b-navbar
+      toggleable="lg"
+      :style="{
+        backgroundColor: `var(--${theme}-navbar-background)`,
+        color: `var(--${theme}-navbar-text-color)`,
+      }"
+    >
       <b-navbar-brand to="/">
         <font-awesome-icon icon="kitchen-set" style="padding-left: 10px;" /> ShelfLife
       </b-navbar-brand>
@@ -9,18 +15,12 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="me-auto">
-          <b-nav-item to="/">View Foods</b-nav-item>
-          <b-nav-item to="/add">Add Food</b-nav-item>
+          <b-nav-item v-if="loggedInUser" to="/">View Foods</b-nav-item>
+          <b-nav-item v-if="loggedInUser" to="/add">Add Food</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
 
       <b-navbar-nav class="ml-auto">
-        <b-nav-item v-if="loggedInUser" to="/claim">
-          <div class="claim-button">
-            Claim Food
-            <span class="notification-bubble" v-if="claimableFoodsCount > 0">{{ claimableFoodsCount }}</span>
-          </div>
-        </b-nav-item>
         <b-nav-item v-if="loggedInUser">
           <span class="nav-link">Hi, {{ loggedInUser }}</span>
           <b-button variant="link" @click="logout">Sign Out</b-button>
@@ -34,46 +34,56 @@
       </b-navbar-nav>
     </b-navbar>
 
-    <!-- Dummy Data Table -->
-    <b-table striped hover :items="foods" :fields="fields"></b-table>
-    <router-view @add-food="addFood" :foods="foods" />
+    <!-- Main Content -->
+    <router-view />
   </div>
 </template>
 
 <script>
 import { faSun, faMoon, faKitchenSet } from '@fortawesome/free-solid-svg-icons';
+import { auth } from './firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 export default {
   name: 'App',
   data() {
     return {
-      foods: [
-        { id: 1, name: 'Apple', category: 'Fruit', quantity: 10 },
-        { id: 2, name: 'Bread', category: 'Grain', quantity: 5 },
-        { id: 3, name: 'Carrot', category: 'Vegetable', quantity: 7 },
-        { id: 4, name: 'Chicken', category: 'Meat', quantity: 4 },
-      ],
-      fields: ['id', 'name', 'category', 'quantity'], // Table columns
       theme: 'light',
       faSun,
       faMoon,
       faKitchenSet,
-      loggedInUser: localStorage.getItem('loggedInUser'),
-      claimableFoodsCount: 0,
+      loggedInUser: null,
     };
   },
   methods: {
     toggleTheme() {
       this.theme = this.theme === 'dark' ? 'light' : 'dark';
     },
-    logout() {
-      localStorage.removeItem('loggedInUser');
-      this.loggedInUser = null;
-      this.$router.push('/login');
+    async logout() {
+      try {
+        await signOut(auth);
+        localStorage.removeItem('loggedInUser');
+        this.loggedInUser = null;
+        this.$router.push('/login');
+      } catch (error) {
+        console.error('Error signing out:', error);
+      }
     },
   },
-  mounted() {
+  created() {
     this.theme = 'dark'; // Set initial theme
+    this.loggedInUser = localStorage.getItem('loggedInUser');
+
+    // Listen for auth state changes
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.loggedInUser = user.displayName;
+        localStorage.setItem('loggedInUser', user.displayName);
+      } else {
+        this.loggedInUser = null;
+        localStorage.removeItem('loggedInUser');
+      }
+    });
   },
 };
 </script>

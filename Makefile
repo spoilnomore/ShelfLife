@@ -4,26 +4,28 @@ UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
 run: stop build
-	-docker network create spoilnomore
+	- docker network create spoilnomore > /dev/null 2>&1
 	docker run \
-	-p 80:8081 \
-	-p 3000:3000 \
-	-v ${CURDIR}/src:/app/src \
-	-v ${CURDIR}/uploads:/app/uploads \
-	-e CHOKIDAR_USEPOLLING=true \
-	--network=spoilnomore \
+		-p 80:8081 \
+		-p 3000:3000 \
+		-v ${CURDIR}/src:/app/src \
+		-v ${CURDIR}/uploads:/app/uploads \
+		-v ${CURDIR}/.env:/app/.env \
+		-e CHOKIDAR_USEPOLLING=true \
+		--network=spoilnomore \
 	-d shelflife
 	make logs
 else
 run: stop build
-	-docker network create spoilnomore
+	-@docker network create spoilnomore > /dev/null 2>&1 || true
 	docker run \
-	-p 8080:8080 \
-	-p 3000:3000 \
-	-v ${CURDIR}/src:/app/src \
-	-v ${CURDIR}/uploads:/app/uploads \
-	-e CHOKIDAR_USEPOLLING=true \
-	-e HOST=0.0.0.0 \
+		-p 8080:8080 \
+		-p 3000:3000 \
+		-v ${CURDIR}/src:/app/src \
+		-v ${CURDIR}/uploads:/app/uploads \
+		-v ${CURDIR}/.env:/app/.env \
+		-e CHOKIDAR_USEPOLLING=true \
+		-e HOST=0.0.0.0 \
 	-d shelflife
 	make logs
 endif
