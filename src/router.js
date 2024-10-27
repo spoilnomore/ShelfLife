@@ -1,4 +1,3 @@
-// src/router.js
 import { createRouter, createWebHistory } from 'vue-router';
 import AddFood from './components/AddFood.vue';
 import UserLogin from './components/CoolLogin.vue';
@@ -10,18 +9,27 @@ const routes = [
         path: '/',
         name: 'CoolPantry',
         component: CoolPantry,
-        meta: { requiresAuth: true },
+        meta: {
+            requiresAuth: true,
+            title: 'Pantry - ShelfLife',
+        },
     },
     {
         path: '/add',
         name: 'AddFood',
         component: AddFood,
-        meta: { requiresAuth: true },
+        meta: {
+            requiresAuth: true,
+            title: 'Add Food - ShelfLife',
+        },
     },
     {
         path: '/login',
         name: 'Login',
         component: UserLogin,
+        meta: {
+            title: 'Login - ShelfLife',
+        },
     },
 ];
 
@@ -30,9 +38,14 @@ const router = createRouter({
     routes,
 });
 
-// Navigation guard to check for authenticated users
+// Navigation guard to check for authenticated users and set document title
 router.beforeEach((to, from, next) => {
     const user = auth.currentUser || localStorage.getItem('loggedInUser');
+
+    // Set the document title based on the route meta title
+    if (to.meta && to.meta.title) {
+        document.title = to.meta.title;
+    }
 
     if (to.matched.some((record) => record.meta.requiresAuth)) {
         if (!user) {

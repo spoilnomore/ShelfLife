@@ -1,7 +1,10 @@
 # ShelfLife
 
 You need to set up a Firebase project on Google
-and enable Google authentication
+and enable Google authentication.
+
+**SpoilNoMore developers: please just use the .env that i
+gave you in the discord chat. do not listen to this.**
 
 heres what GPT said so you dont have to waste
 another water bottle asking it for a response.. ;)
@@ -49,3 +52,14 @@ VUE_APP_FIREBASE_MEASUREMENT_ID=fillmeout
 ```
 
 Just replace the `fillmeout` with the values.
+
+## Running
+
+```bash
+cd db
+make
+cd ../backend 
+make
+cd ..
+make
+```
