@@ -8,6 +8,7 @@ run: stop build
 	docker run \
 	-p 80:8081 \
 	-p 3000:3000 \
+	-v ${CURDIR}/src:/app/src \
 	-v ${CURDIR}/uploads:/app/uploads \
 	-e CHOKIDAR_USEPOLLING=true \
 	--network=spoilnomore \
@@ -19,7 +20,8 @@ run: stop build
 	docker run \
 	-p 8080:8080 \
 	-p 3000:3000 \
-	-v ${CURDIR}:/app \
+	-v ${CURDIR}/src:/app/src \
+	-v ${CURDIR}/uploads:/app/uploads \
 	-e CHOKIDAR_USEPOLLING=true \
 	-e HOST=0.0.0.0 \
 	-d shelflife
