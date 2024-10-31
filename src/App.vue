@@ -54,7 +54,7 @@ export default {
       faKitchenSet,
       loggedInUser: null,
     };
-  },
+  }, 
   methods: {
     toggleTheme() {
       this.theme = this.theme === 'dark' ? 'light' : 'dark';
@@ -69,7 +69,7 @@ export default {
         console.error('Error signing out:', error);
       }
     },
-  },
+  }, //hello
   created() {
     this.theme = 'dark'; // Set initial theme
     this.loggedInUser = localStorage.getItem('loggedInUser');
