@@ -20,4 +20,21 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         household_id INTEGER REFERENCES households(id) ON DELETE SET NULL
     );
 
+
+     -- Create Food Table
+    CREATE TABLE IF NOT EXISTS food (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        location VARCHAR(255) NOT NULL,
+        owner VARCHAR(255) NOT NULL,
+        expiration_date DATE NOT NULL,
+        sharing VARCHAR(50) NOT NULL,
+        image_path VARCHAR(255),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        household_id INTEGER,
+        FOREIGN KEY (household_id) REFERENCES households(id)
+    );
+
 EOSQL
+
+

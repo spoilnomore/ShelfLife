@@ -84,3 +84,4 @@ def create_user():
     except Exception as e:
         print(f"Error creating user: {e}")
         return jsonify({'error': 'Failed to create user'}), 500
+

@@ -20,9 +20,9 @@
                 <label for="owner">Owner:</label>
                 <select id="owner" v-model="newFood.owner" required>
                     <option>J.P.</option>
-                    <option>Joe</option>
-                    <option>Jonah</option>
-                    <option>Joshua</option>
+                    <option>Misha</option>
+                    <option>Alex</option>
+                    <option>Tomas</option>
                     <option>Unknown</option>
                 </select>
             </div>
@@ -87,12 +87,12 @@ export default {
                 formData.append(key, this.newFood[key]);
             });
 
-            await axios.post(`${process.env.VUE_APP_SERVER_URL}/foodAdd`, formData, {
+            await axios.post('http://localhost:8081/foodAdd', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            window.alert('mmm momo appreciates your delectable food');
+            window.alert('mmm ShelfLife appreciates your delectable food');
 
             // Reset the form
             this.newFood = {
