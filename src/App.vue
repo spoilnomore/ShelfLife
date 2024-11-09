@@ -1,41 +1,56 @@
 <template>
   <div id="app" :class="theme">
-    <b-navbar
-      toggleable="lg"
-      :style="{
-        backgroundColor: `var(--${theme}-navbar-background)`,
-        color: `var(--${theme}-navbar-text-color)`,
-      }"
-    >
-      <b-navbar-brand to="/">
-        <font-awesome-icon icon="kitchen-set" style="padding-left: 10px;" /> ShelfLife
-      </b-navbar-brand>
+      <div id="header">
+          <b-navbar toggleable="lg"
+                    :style="{backgroundColor: `var(--${theme}-navbar-background)`,
+                    color: `var(--${theme}-navbar-text-color)`,
+          }">
+              <b-navbar-brand to="/">
+                  <font-awesome-icon icon="kitchen-set" style="padding-left: 10px;" /> ShelfLife
+              </b-navbar-brand>
 
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+              <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-      <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav class="me-auto">
-          <b-nav-item v-if="loggedInUser" to="/">View Foods</b-nav-item>
-          <b-nav-item v-if="loggedInUser" to="/add">Add Food</b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
+              <b-collapse id="nav-collapse" is-nav>
+                  <b-navbar-nav class="me-auto">
+                      <b-nav-item v-if="loggedInUser" to="/">View Foods</b-nav-item>
+                      <b-nav-item v-if="loggedInUser" to="/add">Add Food</b-nav-item>
+                  </b-navbar-nav>
+              </b-collapse>
 
-      <b-navbar-nav class="ml-auto">
-        <b-nav-item v-if="loggedInUser">
-          <span class="nav-link">Hi, {{ loggedInUser }}</span>
-          <b-button variant="link" @click="logout">Sign Out</b-button>
-        </b-nav-item>
-        <b-nav-item v-else to="/login">Login</b-nav-item>
-        <b-nav-item>
-          <b-button variant="link" @click="toggleTheme">
-            <font-awesome-icon :icon="theme === 'dark' ? faSun : faMoon" />
-          </b-button>
-        </b-nav-item>
-      </b-navbar-nav>
-    </b-navbar>
+              <b-navbar-nav class="ml-auto">
+                  <b-nav-item v-if="loggedInUser">
+                      <span class="nav-link">Hi, {{ loggedInUser }}</span>
+                      <b-button variant="link" @click="logout">Sign Out</b-button>
+                  </b-nav-item>
+                  <b-nav-item v-else to="/login">Login</b-nav-item>
+                  <b-nav-item>
+                      <b-button variant="link" @click="toggleTheme">
+                          <font-awesome-icon :icon="theme === 'dark' ? faSun : faMoon" />
+                      </b-button>
+                  </b-nav-item>
+              </b-navbar-nav>
+          </b-navbar>
+      </div>
 
     <!-- Main Content -->
-    <router-view />
+      <main class="main-content">
+          <router-view />
+      </main>
+      <div id="footer">
+          <b-navbar toggleable="lg"
+                    :style="{backgroundColor: `var(--${theme}-navbar-background)`,
+                  color: `var(--${theme}-navbar-text-color)`,
+           }">
+
+              <b-navbar-nav class="footer-links">
+                  <b-nav-item to="/help">Help</b-nav-item>
+                  <b-nav-item to="/contact">Contact</b-nav-item>
+                  <b-nav-item to="/faq">FAQ</b-nav-item>
+                  <b-nav-item to="/about">About Us</b-nav-item>
+              </b-navbar-nav>
+          </b-navbar>
+      </div>
   </div>
 </template>
 
@@ -164,5 +179,37 @@ export default {
 
 .dark .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--footer-background-color, #f8f9fa);
+    color: var(--footer-text-color, #333);
+    display: flex;
+    justify-content: center;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center; /* Centers the links horizontally */
+    width: 100%;
+}
+
+.footer-links .nav-item a {
+    color: inherit;
+    text-decoration: none;
+    }
+
+.footer-links .nav-item a:hover {
+    text-decoration: underline;
 }
 </style>
