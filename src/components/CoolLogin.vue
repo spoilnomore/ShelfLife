@@ -159,6 +159,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 80vh;
+  flex-grow: 1;
 }
 
 .login-container {
@@ -175,8 +176,8 @@ export default {
   color: #ffffff;
 }
 
-    .login-container {
-        padding: 40px;
-        border-radius: 8px;
-    }
+.login-container {
+    padding: 40px;
+    border-radius: 8px;
+}
 </style>

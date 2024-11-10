@@ -1,56 +1,55 @@
 <template>
   <div id="app" :class="theme">
-      <div id="header">
-          <b-navbar toggleable="lg"
-                    :style="{backgroundColor: `var(--${theme}-navbar-background)`,
-                    color: `var(--${theme}-navbar-text-color)`,
-          }">
-              <b-navbar-brand to="/">
-                  <font-awesome-icon icon="kitchen-set" style="padding-left: 10px;" /> ShelfLife
-              </b-navbar-brand>
-
-              <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-              <b-collapse id="nav-collapse" is-nav>
-                  <b-navbar-nav class="me-auto">
-                      <b-nav-item v-if="loggedInUser" to="/">View Foods</b-nav-item>
-                      <b-nav-item v-if="loggedInUser" to="/add">Add Food</b-nav-item>
-                  </b-navbar-nav>
-              </b-collapse>
-
-              <b-navbar-nav class="ml-auto">
-                  <b-nav-item v-if="loggedInUser">
-                      <span class="nav-link">Hi, {{ loggedInUser }}</span>
-                      <b-button variant="link" @click="logout">Sign Out</b-button>
-                  </b-nav-item>
-                  <b-nav-item v-else to="/login">Login</b-nav-item>
-                  <b-nav-item>
-                      <b-button variant="link" @click="toggleTheme">
-                          <font-awesome-icon :icon="theme === 'dark' ? faSun : faMoon" />
-                      </b-button>
-                  </b-nav-item>
-              </b-navbar-nav>
-          </b-navbar>
-      </div>
-
     <!-- Main Content -->
       <main class="main-content">
+          <div id="header">
+              <b-navbar toggleable="lg"
+                        :style="{backgroundColor: `var(--${theme}-navbar-background)`,
+                    color: `var(--${theme}-navbar-text-color)`,
+          }">
+                  <b-navbar-brand to="/">
+                      <font-awesome-icon icon="kitchen-set" style="padding-left: 10px;" /> ShelfLife
+                  </b-navbar-brand>
+
+                  <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+                  <b-collapse id="nav-collapse" is-nav>
+                      <b-navbar-nav class="me-auto">
+                          <b-nav-item v-if="loggedInUser" to="/">View Foods</b-nav-item>
+                          <b-nav-item v-if="loggedInUser" to="/add">Add Food</b-nav-item>
+                      </b-navbar-nav>
+                  </b-collapse>
+
+                  <b-navbar-nav class="ml-auto">
+                      <b-nav-item v-if="loggedInUser">
+                          <span class="nav-link">Hi, {{ loggedInUser }}</span>
+                          <b-button variant="link" @click="logout">Sign Out</b-button>
+                      </b-nav-item>
+                      <b-nav-item v-else to="/login">Login</b-nav-item>
+                      <b-nav-item>
+                          <b-button variant="link" @click="toggleTheme">
+                              <font-awesome-icon :icon="theme === 'dark' ? faSun : faMoon" />
+                          </b-button>
+                      </b-nav-item>
+                  </b-navbar-nav>
+              </b-navbar>
+          </div>
           <router-view />
-      </main>
-      <div id="footer">
-          <b-navbar toggleable="lg"
-                    :style="{backgroundColor: `var(--${theme}-navbar-background)`,
+          <div id="footer">
+              <b-navbar toggleable="lg"
+                        :style="{backgroundColor: `var(--${theme}-navbar-background)`,
                   color: `var(--${theme}-navbar-text-color)`,
            }">
 
-              <b-navbar-nav class="footer-links">
-                  <b-nav-item to="/help">Help</b-nav-item>
-                  <b-nav-item to="/contact">Contact</b-nav-item>
-                  <b-nav-item to="/faq">FAQ</b-nav-item>
-                  <b-nav-item to="/about">About Us</b-nav-item>
-              </b-navbar-nav>
-          </b-navbar>
-      </div>
+                  <b-navbar-nav class="footer-links">
+                      <b-nav-item to="/help">Help</b-nav-item>
+                      <b-nav-item to="/contact">Contact</b-nav-item>
+                      <b-nav-item to="/faq">FAQ</b-nav-item>
+                      <b-nav-item to="/about">About Us</b-nav-item>
+                  </b-navbar-nav>
+              </b-navbar>
+          </div>
+      </main>
   </div>
 </template>
 
@@ -184,7 +183,8 @@ export default {
 .main-content {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    flex-grow: 1;
+    min-height: 100vh; /*92.75*/
 }
 
 .footer {
