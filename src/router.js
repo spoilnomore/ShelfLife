@@ -15,6 +15,14 @@ const routes = [
         },
     },
     {
+        path: '/faq',
+        name: 'FAQ',
+        component: FAQ,
+        meta: {
+          title: 'FAQ - ShelfLife',
+        },
+      },
+    {
         path: '/add',
         name: 'AddFood',
         component: AddFood,
