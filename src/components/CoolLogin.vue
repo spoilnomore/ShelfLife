@@ -162,6 +162,16 @@ export default {
   flex-grow: 1;
 }
 
+.light .login-page {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.dark .login-page {
+    background-color: #4c382c;
+    color: #ffffff;
+}
+
 .login-container {
   text-align: center;
 }
