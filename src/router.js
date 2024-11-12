@@ -2,6 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router';
 import AddFood from './components/AddFood.vue';
 import UserLogin from './components/CoolLogin.vue';
 import CoolPantry from './components/CoolPantry.vue'; // Main pantry component
+import FAQ from '@/components/FAQ.vue';
+import ContactUs from '@/components/ContactUs.vue';
+import AboutUs from '@/components/AboutUs.vue';
 import { auth } from './firebase';
 
 const routes = [
@@ -20,6 +23,22 @@ const routes = [
         component: FAQ,
         meta: {
           title: 'FAQ - ShelfLife',
+        },
+      },
+      {
+        path: '/about',
+        name: 'AboutUs',
+        component: AboutUs,
+        meta: {
+          title: 'About Us - ShelfLife',
+        },
+      },
+      {
+        path: '/contact',
+        name: 'ContactUs',
+        component: ContactUs,
+        meta: {
+          title: 'Contact Us - ShelfLife',
         },
       },
     {
