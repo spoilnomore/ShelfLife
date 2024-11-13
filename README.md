@@ -1,5 +1,8 @@
 # ShelfLife
 
+git config --global core.autocrlf false
+
+
 You need to set up a Firebase project on Google
 and enable Google authentication.
 
