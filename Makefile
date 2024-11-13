@@ -2,6 +2,10 @@
 
 UNAME_S := $(shell uname -s)
 
+alltogether:
+	docker-compose down
+	docker-compose up --build -d
+
 ifeq ($(UNAME_S),Linux)
 run: stop build
 	-@docker network create spoilnomore > /dev/null 2>&1 || true
@@ -35,6 +39,9 @@ build:
 	docker build -t shelflife .
 
 stop down:
+	docker-compose down
+
+olddown:
 	-docker stop `docker ps -aqf "ancestor=shelflife"`
 	-docker rm `docker ps -aqf "ancestor=shelflife"`
 

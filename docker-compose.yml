@@ -1,55 +1,53 @@
 version: '3.8'
 
+networks:
+  spoilnomore:
+    driver: bridge
+
 services:
   db:
     build:
       context: ./db
       dockerfile: Dockerfile
     container_name: shelfdb
-    environment:
-      POSTGRES_USER: pantryowner
-      POSTGRES_PASSWORD: spoilnomore
-      POSTGRES_DB: shelflife
     volumes:
       - shelfdb-data:/var/lib/postgresql/data
+    ports:
+      - "5947:5432"
     networks:
       - spoilnomore
-    ports:
-      - "5947:5432" # Expose PostgreSQL to host at port 5947
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: flaskserver
-    environment:
-      FLASK_APP: run.py
-      FLASK_RUN_PORT: 8081
-      FLASK_RUN_HOST: 0.0.0.0
-    networks:
-      - spoilnomore
-    ports:
-      - "8081:8081" # Expose backend Flask app to host at port 8081
     depends_on:
       - db
+    ports:
+      - "8081:8081"
+    networks:
+      - spoilnomore
 
   frontend:
     build:
-      context: . # Assuming the Dockerfile for the Vue app is in the root directory
-      dockerfile: Dockerfile 
-    container_name: vueapp
-    environment:
-      NODE_ENV: development
-    networks:
-      - spoilnomore
-    ports:
-      - "8080:8080" # Expose frontend Vue app to host at port 8080
+      context: .
+      dockerfile: Dockerfile
+    container_name: shelflife
     depends_on:
       - backend
+    ports:
+      - "8080:8080"
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+      - ./uploads:/app/uploads
+      - ./.env:/app/.env
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - HOST=0.0.0.0
+    networks:
+      - spoilnomore
 
 volumes:
   shelfdb-data:
-
-networks:
-  spoilnomore:
-    driver: bridge
