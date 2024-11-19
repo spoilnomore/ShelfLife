@@ -2,8 +2,7 @@
 
 UNAME_S := $(shell uname -s)
 
-alltogether:
-	docker-compose down
+alltogether: stop
 	docker-compose up --build -d
 
 ifeq ($(UNAME_S),Linux)
@@ -40,6 +39,10 @@ build:
 
 stop down:
 	docker-compose down
+	-docker stop shelfdb
+	-docker rm shelfdb
+	-docker stop flaskserver
+	-docker rm flaskserver
 
 olddown:
 	-docker stop `docker ps -aqf "ancestor=shelflife"`
