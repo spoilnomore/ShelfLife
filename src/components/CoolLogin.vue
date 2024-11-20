@@ -90,6 +90,13 @@ export default {
         } else {
           // Existing user, log them in and redirect
           localStorage.setItem('loggedInUser', data.user.username);
+
+          // Store household_name if available
+          if (data.user.household_name) {
+            localStorage.setItem('userHouseholdName', data.user.household_name);
+            localStorage.setItem('householdId', data.user.household_id);
+          }
+
           this.$router.push('/');
         }
       } catch (error) {
@@ -142,6 +149,17 @@ export default {
 
         // Save user info and redirect
         localStorage.setItem('loggedInUser', data.user.username);
+
+
+        // Store household_name if available
+        if (data.user.household_name) {
+          localStorage.setItem('userHouseholdName', data.user.household_name);
+          localStorage.setItem('householdId', data.user.household_id);
+        }
+
+
+
+          
         this.$router.push('/');
       } catch (error) {
         console.error('Error creating user:', error);

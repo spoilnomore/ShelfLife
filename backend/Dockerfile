@@ -9,16 +9,15 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
+# Install Gunicorn
+RUN pip install gunicorn
+
 # Copy the application code
 COPY . .
 
 # Expose the port Flask will run on
 EXPOSE 8081
 
-# Set environment variables for Flask
-ENV FLASK_APP=run.py
-ENV FLASK_RUN_PORT=8081
-ENV FLASK_RUN_HOST=0.0.0.0
+# Use Gunicorn to run the application
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8081", "--access-logfile", "-", "--error-logfile", "-", "run:app"]
 
-# Start the Flask application using Waitress
-CMD ["waitress-serve", "--port=8081", "--threads=100", "run:app"]

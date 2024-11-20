@@ -1,5 +1,10 @@
 <template>
   <div class="pantry" :class="$root.theme">
+    <!-- Household name display -->
+    <div class="household-header">
+      <h2>{{ householdName }}</h2>
+    </div>
+
     <b-table :items="foods" :fields="fields" striped hover responsive>
       <template #cell(expiration_date)="data">
         <span :class="{ 'text-danger': isPastDate(data.item.expiration_date) }">
@@ -31,6 +36,7 @@ export default {
   },
   data() {
     return {
+      householdName: localStorage.getItem('userHouseholdName') || 'Unknown Household',
       foods: [],
       fields: [
         { key: 'id', label: 'ID' },
@@ -65,11 +71,18 @@ export default {
   methods: {
     // Fetch all food items from the backend
     async fetchFoods() {
+      const householdId = localStorage.getItem('householdId');
+      if (!householdId) {
+        console.error('householdId is missing in localStorage');
+        return;
+      }
+
       try {
-        const response = await axios.get(`http://localhost:8081/foods`);
-        this.foods = response.data;
+        const response = await fetch(`http://localhost:8081/foods?household_id=${householdId}`);
+        const data = await response.json();
+        this.foods = data;
       } catch (error) {
-        console.error("Error fetching foods:", error);
+        console.error('Error fetching foods:', error);
       }
     },
     // Format date to make it more readable
@@ -108,6 +121,12 @@ export default {
 </script>
 
 <style scoped>
+.household-header {
+  display: flex;
+  justify-content: center; 
+  align-items: center;   
+  text-align: center;    
+}
 .pantry {
   padding: 20px;
 }
