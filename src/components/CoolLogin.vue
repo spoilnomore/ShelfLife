@@ -115,6 +115,7 @@ export default {
     showCreateHouseholdInput() {
       this.showHouseholdOption = false;
       this.showHouseholdInput = 'create';
+      
     },
     async createUser(createNewHousehold) {
       if (!this.newUsername || !this.newHouseholdName) return;

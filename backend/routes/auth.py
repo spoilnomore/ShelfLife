@@ -81,7 +81,8 @@ def create_user():
             'username': new_user.username,
             'email': new_user.email,
             'google_id': new_user.google_id,
-            'household_name': household.household_name
+            'household_name': household.household_name,
+            'household_id': household.id
         }, 'isNewUser': False})
     except Exception as e:
         print(f"Error creating user: {e}")
