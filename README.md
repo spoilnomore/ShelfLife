@@ -1,8 +1,5 @@
 # ShelfLife
 
-git config --global core.autocrlf false
-
-
 You need to set up a Firebase project on Google
 and enable Google authentication.
 
@@ -66,3 +63,20 @@ make
 cd ..
 make
 ```
+
+## Lessons Learned
+
+If you are coding in a cross-platform cross-OS development team then Docker is the
+best thing. Windows users are kind of left to run the extra mile but still is worth
+it when having to deploy to production, real-world scenarios. Servers run on Linux
+etc so Windows developers get to play a more fun game of customizing their setup to be
+more Unix like
+
+This involves downloading git bash, chocolatey, and installing make (makefiles are also
+extremely potent and useful)
+
+`git config --global core.autocrlf false`
+
+^ we encountered an issue where shell script was invisible to docker and docker db would
+not initialize with an sql script, well it was because windows was cloning crlf instead of
+lf. this command is actually not necessary if using .gitattributes * eol = lf
