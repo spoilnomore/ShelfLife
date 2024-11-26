@@ -20,9 +20,19 @@
       <!-- Ask to Join or Create Household -->
       <div v-if="showHouseholdOption && !showHouseholdInput">
         <p>Do you want to join a household or make a new one?</p>
-        <b-button variant="success" @click="showJoinHouseholdInput">Join Household</b-button>
-        <b-button variant="primary" @click="showCreateHouseholdInput">Create New Household</b-button>
+        <b-button
+          variant="success"
+          @click="showJoinHouseholdInput"
+          :disabled="!householdsAvailable"
+          :title="!householdsAvailable ? 'No households available' : ''"
+        >
+          Join Household
+        </b-button>
+        <b-button variant="primary" @click="showCreateHouseholdInput">
+          Create New Household
+        </b-button>
       </div>
+
 
       <!-- Input for Joining Existing Household -->
       <div v-if="showHouseholdInput === 'join'">
@@ -70,6 +80,7 @@ export default {
       googleUser: null,
       householdOptions: [], // Array to store households fetched from backend
       selectedHouseholdId: null, // ID of the selected household
+      householdsAvailable: false,
     };
   },
   methods: {
@@ -91,31 +102,37 @@ export default {
 
         const data = await response.json();
 
-        if (data.isNewUser) {
-          // Show form to create new user details if not found in the database
+        if (data.isNewUser || !data.user.household_name) {
+          // User is new or doesn't have a household; prompt to complete setup
           this.googleUser = { google_id, email };
           this.showCreateForm = true;
-        } else {
-          // Existing user, log them in and redirect
-          localStorage.setItem('loggedInUser', data.user.username);
 
-          // Store household_name if available
-          if (data.user.household_name) {
-            localStorage.setItem('userHouseholdName', data.user.household_name);
-            localStorage.setItem('householdId', data.user.household_id);
+          // Pre-fill username if it exists
+          if (data.user && data.user.username) {
+            this.newUsername = data.user.username;
           }
+        } else {
+          // Existing user with household, log them in and redirect
+          localStorage.setItem('loggedInUser', data.user.username);
+          localStorage.setItem('userHouseholdName', data.user.household_name);
+          localStorage.setItem('householdId', data.user.household_id);
 
           this.$router.push('/');
         }
+
       } catch (error) {
         console.error('Error during sign-in:', error);
       }
     },
-    promptHousehold() {
-      if (!this.newUsername) return;
-      this.showCreateForm = false;
-      this.showHouseholdOption = true;
-    },
+      promptHousehold() {
+        if (!this.newUsername) return;
+        this.showCreateForm = false;
+        this.showHouseholdOption = true;
+
+        // Fetch households to check availability
+        this.fetchHouseholds();
+      },
+
     showJoinHouseholdInput() {
       this.showHouseholdOption = false;
       this.showHouseholdInput = 'join';
@@ -129,23 +146,25 @@ export default {
       
     },
     async fetchHouseholds() {
-      try {
-        const response = await fetch('http://localhost:8081/households', {
-          method: 'GET',
-        });
-        const data = await response.json();
-        console.log('Fetched households:', data);
-        this.householdOptions = data.map(household => ({
-          value: household.id,
-          text: household.name || household.household_name,
-        }));
-        console.log('Household options:', this.householdOptions);
-      } catch (error) {
-        console.error('Error fetching households:', error);
-      }
-    },
+    try {
+      const response = await fetch('http://localhost:8081/households', {
+        method: 'GET',
+      });
+      const data = await response.json();
+      console.log('Fetched households:', data);
+      this.householdOptions = data.map(household => ({
+        value: household.id,
+        text: household.name || household.household_name,
+      }));
+      console.log('Household options:', this.householdOptions);
 
-
+      // Update householdsAvailable based on fetched data
+      this.householdsAvailable = this.householdOptions.length > 0;
+    } catch (error) {
+      console.error('Error fetching households:', error);
+      this.householdsAvailable = false;
+    }
+  },
 
   async createUser(createNewHousehold) {
     if (!createNewHousehold && !this.selectedHouseholdId) {
@@ -180,16 +199,15 @@ export default {
           return;
         }
 
-        // Save user info and redirect
-        localStorage.setItem('loggedInUser', data.user.username);
-        if (data.user.household_name) {
-          localStorage.setItem('userHouseholdName', data.user.household_name);
-          localStorage.setItem('householdId', data.user.household_id); // Now this will have a value
-        }
+      // Save user info and redirect
+      localStorage.setItem('loggedInUser', data.user.username);
+      if (data.user.household_name) {
+        localStorage.setItem('userHouseholdName', data.user.household_name);
+        localStorage.setItem('householdId', data.user.household_id);
+      }
 
-        
+      this.$router.push('/');
 
-        this.$router.push('/');
       } catch (error) {
         console.error('Error creating user:', error);
       }

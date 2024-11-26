@@ -36,6 +36,7 @@ def check_user():
     }, 'isNewUser': False})
 
 
+
 @auth.route('/create-user', methods=['POST'])
 def create_user():
     data = request.json
