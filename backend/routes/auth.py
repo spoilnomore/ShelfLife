@@ -68,6 +68,7 @@ def create_user():
         if not household:
             return jsonify({'error': 'Household not found'}), 404
 
+
     # Create new user in the database with the household_id
     try:
         new_user = User(
@@ -84,6 +85,7 @@ def create_user():
             'username': new_user.username,
             'email': new_user.email,
             'google_id': new_user.google_id,
+
             'household_name': household.household_name,
             'household_id': household.id
         }, 'isNewUser': False})
@@ -91,3 +93,4 @@ def create_user():
     except Exception as e:
         print(f"Error creating user: {e}")
         return jsonify({'error': 'Failed to create user'}), 500
+
