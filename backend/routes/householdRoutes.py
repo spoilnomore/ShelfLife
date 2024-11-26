@@ -17,19 +17,19 @@ def get_all_households():
 
 
 
-@household_bp.route('/householdMembers', methods=['GET'])
-def get_household_members():
-    household_id = request.args.get('household_id', type=int)
-    if not household_id:
-        return jsonify({"error": "household_id is required"}), 400
+@household_bp.route('/households/<int:household_id>/members', methods=['GET'])
+def get_household_members(household_id):
+    # Check if the household exists
+    household = Household.query.get(household_id)
+    if not household:
+        return jsonify({"error": "Household not found"}), 404
 
+    # Get members of the household
     members = User.query.filter_by(household_id=household_id).all()
     if not members:
-        return jsonify({"error": "members is required"}), 400
+        return jsonify({"error": "No members found in this household"}), 404
 
     member_data = [{"id": member.id, "username": member.username} for member in members]
-    logging.debug(f"Household members: {member_data}")
-    return jsonify(member_data)
-
-
+    print(f"Household members: {member_data}")
+    return jsonify({"members": member_data}), 200
 

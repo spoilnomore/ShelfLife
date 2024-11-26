@@ -18,21 +18,24 @@ def check_user():
     user = User.query.filter_by(google_id=google_id).first()
     if not user:
         return jsonify({'isNewUser': True})
-    
-    # If user exists, join with the household table to get household name
+
+    # If user exists, join with the household table to get household name and ID
     household_name = None
+    household_id = None
     if user.household_id:
         household = Household.query.filter_by(id=user.household_id).first()
         if household:
             household_name = household.household_name
+            household_id = household.id
 
-    # Return existing user data, including the household name if it exists
+    # Return existing user data, including the household name and ID
     return jsonify({'user': {
         'id': user.id,
         'username': user.username,
         'email': user.email,
         'google_id': user.google_id,
-        'household_name': household_name
+        'household_name': household_name,
+        'household_id': household_id
     }, 'isNewUser': False})
 
 

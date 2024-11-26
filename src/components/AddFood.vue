@@ -17,14 +17,15 @@
             </div>
 
             <div class="mb-3">
-                <label for="owner">Owner:</label>
-                <select id="owner" v-model="newFood.owner" required>
-                    <option v-for="member in householdMembers" :key="member.id" :value="member.username">
-                        {{ member.username }}
-                    </option>
-                    <option value="Unknown">Unknown</option>
-                </select>
+            <label for="owner">Owner:</label>
+            <select id="owner" v-model="newFood.owner" required>
+                <option v-for="member in householdMembers" :key="member.id" :value="member.username">
+                {{ member.username }}
+                </option>
+                <option value="Unknown">Unknown</option>
+            </select>
             </div>
+
 
             <div class="mb-3">
                 <label for="expiration_date">Expiration Date:</label>
@@ -73,6 +74,7 @@ export default {
             },
             fileInput: null, // New property
             isUploading: false,
+            householdMembers: [],
         }
     },
     methods: {
@@ -113,6 +115,25 @@ export default {
             this.$refs.fileInput.value = ''; // Clear the file input field
             this.isUploading = false;
         },
-    }
+        async fetchHouseholdMembers() {
+            const householdId = localStorage.getItem('householdId');
+            if (!householdId) {
+            alert('Household ID is missing. Please try logging in again.');
+            return;
+            }
+
+            try {
+            const response = await axios.get(`http://localhost:8081/households/${householdId}/members`);
+            this.householdMembers = response.data.members;
+            } catch (error) {
+            console.error('Error fetching household members:', error);
+            alert('Error fetching household members.');
+            }
+        },
+    },
+    mounted() {
+        this.fetchHouseholdMembers();
+    },
+
 }
 </script>
