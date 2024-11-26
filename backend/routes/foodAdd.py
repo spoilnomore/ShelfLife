@@ -14,6 +14,10 @@ def food_add():
         expiration_date = request.form.get('expiration_date')
         sharing = request.form.get('sharing')
         image = request.files.get('image')  # Retrieve the file
+        household_id = request.form.get('household_id')
+
+        if not household_id:
+            return jsonify({"error": "household_id is required"}), 400
 
         if not title or not location or not owner or not expiration_date or not sharing:
             return jsonify({"error": "Missing required fields"}), 400
@@ -33,7 +37,8 @@ def food_add():
             owner=owner,
             expiration_date=expiration_date,
             sharing=sharing,
-            image_path=image_path
+            image_path=image_path,
+            household_id=household_id
         )
         db.session.add(new_food)
         db.session.commit()
@@ -46,7 +51,11 @@ def food_add():
 
 @food_bp.route('/foods', methods=['GET'])
 def get_foods():
-    foods = Food.query.all()
+    household_id = request.args.get('household_id', type=int)
+    if not household_id:
+        return jsonify({"error": "household_id is required"}), 400
+
+    foods = Food.query.filter_by(household_id=household_id).all()
     food_data = [{
         "id": food.id,
         "title": food.title,

@@ -43,25 +43,31 @@ def create_user():
     google_id = data.get('google_id')
     email = data.get('email')
     username = data.get('username')
+    household_id = data.get('household_id')
     household_name = data.get('household_name')
-    create_new_household = data.get('create_new_household')  # boolean value
+    create_new_household = data.get('create_new_household')  # Boolean value
 
-    if not username or not household_name:
+    if not username or (create_new_household and not household_name):
         return jsonify({'error': 'Username and household name are required'}), 400
 
     # Handle creating or joining a household
-    household = Household.query.filter_by(household_name=household_name).first()
-    
+    household = None
     if create_new_household:
-        if household:
-            return jsonify({'error': 'Household name already exists. Please choose another name or join this household.'}), 400
         # Create a new household
+        household = Household.query.filter_by(household_name=household_name).first()
+        if household:
+            return jsonify({'error': 'Household name already exists'}), 400
         household = Household(household_name=household_name)
         db.session.add(household)
         db.session.commit()
-    
-    if not household:
-        return jsonify({'error': 'Household not found. Please check the name or create a new household.'}), 404
+    else:
+        # Join an existing household
+        if not household_id:
+            return jsonify({'error': 'Household ID is required'}), 400
+        household = Household.query.get(household_id)
+        if not household:
+            return jsonify({'error': 'Household not found'}), 404
+
 
     # Create new user in the database with the household_id
     try:
@@ -73,14 +79,17 @@ def create_user():
         )
         db.session.add(new_user)
         db.session.commit()
-        
+
         return jsonify({'user': {
             'id': new_user.id,
             'username': new_user.username,
             'email': new_user.email,
             'google_id': new_user.google_id,
-            'household_name': household.household_name
+
+            'household_name': household.household_name,
+            'household_id': household.id
         }, 'isNewUser': False})
+
     except Exception as e:
         print(f"Error creating user: {e}")
         return jsonify({'error': 'Failed to create user'}), 500

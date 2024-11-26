@@ -19,11 +19,10 @@
             <div class="mb-3">
                 <label for="owner">Owner:</label>
                 <select id="owner" v-model="newFood.owner" required>
-                    <option>J.P.</option>
-                    <option>Misha</option>
-                    <option>Alex</option>
-                    <option>Tomas</option>
-                    <option>Unknown</option>
+                    <option v-for="member in householdMembers" :key="member.id" :value="member.username">
+                        {{ member.username }}
+                    </option>
+                    <option value="Unknown">Unknown</option>
                 </select>
             </div>
 
@@ -86,6 +85,14 @@ export default {
             Object.keys(this.newFood).forEach(key => {
                 formData.append(key, this.newFood[key]);
             });
+
+
+            // Append household_id from localStorage
+            const householdId = localStorage.getItem('householdId');
+            if (!householdId) {
+                throw new Error('Household ID is missing. Please try logging in again.');
+            }
+            formData.append('household_id', householdId);
 
             await axios.post('http://localhost:8081/foodAdd', formData, {
                 headers: {

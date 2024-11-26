@@ -12,7 +12,7 @@ class Food(db.Model):
     image_path = db.Column(db.String(255), nullable=True)  
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    
+    # Foreign key to Households table   
     household_id = db.Column(db.Integer, db.ForeignKey('households.id'), nullable=True)
     household = db.relationship('Household', backref='food_items', lazy=True)
 

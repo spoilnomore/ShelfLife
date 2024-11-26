@@ -76,28 +76,34 @@ export default {
     async logout() {
       try {
         await signOut(auth);
-        localStorage.removeItem('loggedInUser');
+        localStorage.clear(); // Clear all localStorage data
         this.loggedInUser = null;
         this.$router.push('/login');
       } catch (error) {
         console.error('Error signing out:', error);
       }
     },
+
   }, //hello
   created() {
     this.theme = 'dark'; // Set initial theme
     this.loggedInUser = localStorage.getItem('loggedInUser');
 
-    // Listen for auth state changes
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        this.loggedInUser = user.displayName;
-        localStorage.setItem('loggedInUser', user.displayName);
-      } else {
-        this.loggedInUser = null;
-        localStorage.removeItem('loggedInUser');
-      }
-    });
+  // Listen for auth state changes
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // Firebase user is logged in
+      this.loggedInUser = user.displayName;
+      localStorage.setItem('loggedInUser', user.displayName);
+    } else {
+      // User is logged out
+      this.loggedInUser = null;
+      localStorage.removeItem('loggedInUser');
+      localStorage.removeItem('userHouseholdName');
+      localStorage.removeItem('householdId');
+    }
+  });
+
   },
 };
 </script>
