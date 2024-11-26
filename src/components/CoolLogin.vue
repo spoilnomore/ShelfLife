@@ -27,12 +27,18 @@
       <!-- Input for Joining Existing Household -->
       <div v-if="showHouseholdInput === 'join'">
         <b-form @submit.prevent="createUser(false)">
-          <b-form-group label="Enter Household Name to Join">
-            <b-form-input v-model="newHouseholdName" required></b-form-input>
+          <b-form-group label="Select a Household to Join">
+            <b-form-select 
+              v-model="selectedHouseholdId" 
+              :options="householdOptions.length > 0 ? householdOptions : [{ value: null, text: 'No households available' }]" 
+              required>
+            </b-form-select>
+
           </b-form-group>
           <b-button variant="primary" type="submit">Join Household</b-button>
         </b-form>
       </div>
+
 
       <!-- Input for Creating New Household -->
       <div v-if="showHouseholdInput === 'create'">
@@ -62,6 +68,8 @@ export default {
       newUsername: '',
       newHouseholdName: '',
       googleUser: null,
+      householdOptions: [], // Array to store households fetched from backend
+      selectedHouseholdId: null, // ID of the selected household
     };
   },
   methods: {
@@ -111,38 +119,62 @@ export default {
     showJoinHouseholdInput() {
       this.showHouseholdOption = false;
       this.showHouseholdInput = 'join';
+
+      // Fetch households for the dropdown
+      this.fetchHouseholds();
     },
     showCreateHouseholdInput() {
       this.showHouseholdOption = false;
       this.showHouseholdInput = 'create';
       
     },
-    async createUser(createNewHousehold) {
-      if (!this.newUsername || !this.newHouseholdName) return;
+    async fetchHouseholds() {
+      try {
+        const response = await fetch('http://localhost:8081/households', {
+          method: 'GET',
+        });
+        const data = await response.json();
+        console.log('Fetched households:', data);
+        this.householdOptions = data.map(household => ({
+          value: household.id,
+          text: household.name || household.household_name,
+        }));
+        console.log('Household options:', this.householdOptions);
+      } catch (error) {
+        console.error('Error fetching households:', error);
+      }
+    },
 
-      const google_id = this.googleUser.google_id;
-      const email = this.googleUser.email;
-      const username = this.newUsername;
-      const household_name = this.newHouseholdName;
+
+
+  async createUser(createNewHousehold) {
+    if (!createNewHousehold && !this.selectedHouseholdId) {
+      alert('Please select a household to join.');
+      return;
+    }
+
+    const payload = {
+      google_id: this.googleUser.google_id,
+      email: this.googleUser.email,
+      username: this.newUsername,
+      household_name: createNewHousehold ? this.newHouseholdName : null,
+      household_id: createNewHousehold ? null : this.selectedHouseholdId, // Ensure this is a number or string
+      create_new_household: createNewHousehold,
+    };
+
+    console.log('Payload:', payload);
 
       try {
-        // Call backend to create a new user or join a household
         const response = await fetch('http://localhost:8081/create-user', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ 
-            google_id, 
-            email, 
-            username, 
-            household_name, 
-            create_new_household: createNewHousehold 
-          }),
+          body: JSON.stringify(payload),
         });
 
         const data = await response.json();
-        
+        console.log('Response:', data); // Log response for debugging
         if (data.error) {
           alert(data.error);
           return;
@@ -150,23 +182,27 @@ export default {
 
         // Save user info and redirect
         localStorage.setItem('loggedInUser', data.user.username);
-
-
-        // Store household_name if available
         if (data.user.household_name) {
           localStorage.setItem('userHouseholdName', data.user.household_name);
-          localStorage.setItem('householdId', data.user.household_id);
+          localStorage.setItem('householdId', data.user.household_id); // Now this will have a value
         }
 
+        
 
-
-          
         this.$router.push('/');
       } catch (error) {
         console.error('Error creating user:', error);
       }
-    },
+    }
+
+
   },
+  watch: {
+  selectedHouseholdId(newValue) {
+    console.log('Selected household ID:', newValue);
+  },
+},
+
 };
 </script>
 

@@ -8,6 +8,14 @@ from models.user import User
 
 household_bp = Blueprint('household', __name__)
 
+@household_bp.route('/households', methods=['GET'])
+def get_all_households():
+    households = Household.query.all()
+    household_data = [{"id": household.id, "name": household.household_name} for household in households]
+    print('Household data:', household_data)
+    return jsonify(household_data)
+
+
 
 @household_bp.route('/householdMembers', methods=['GET'])
 def get_household_members():
