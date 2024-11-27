@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="main">
         <h1>Add a new food item</h1>
         <form @submit.prevent="addFood">
             <div class="mb-3">
@@ -137,3 +137,16 @@ export default {
 
 }
 </script>
+
+<style scoped>
+#main {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.mb3 {
+    padding: 20px;
+}
+</style>
