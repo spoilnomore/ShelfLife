@@ -3,6 +3,10 @@
 UNAME_S := $(shell uname -s)
 
 alltogether: stop
+	@if [ ! -f .env ]; then \
+		echo ".env file does not exist. Please create it before running make and review the readme on how to set up the .env"; \
+		exit 1; \
+	fi
 	docker-compose up --build -d
 
 ifeq ($(UNAME_S),Linux)
