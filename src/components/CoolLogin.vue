@@ -2,8 +2,8 @@
   <div class="login-page" :class="theme">
     <div class="login-container">
       <h1>Welcome to ShelfLife</h1>
-      <p v-if="!showCreateForm && !showHouseholdOption">Please sign in to continue.</p>
-      <b-button v-if="!showCreateForm && !showHouseholdOption" variant="primary" @click="signInWithGoogle">
+      <p v-if="showFirebase">Please sign in to continue.</p>
+      <b-button v-if="showFirebase" variant="primary" @click="signInWithGoogle">
         <font-awesome-icon :icon="['fab', 'google']" /> Sign in with Google
       </b-button>
 
@@ -72,6 +72,7 @@ export default {
   data() {
     return {
       theme: this.$root.theme,
+      showFirebase: true,
       showCreateForm: false,
       showHouseholdOption: false,
       showHouseholdInput: null,
@@ -106,6 +107,7 @@ export default {
           // User is new or doesn't have a household; prompt to complete setup
           this.googleUser = { google_id, email };
           this.showCreateForm = true;
+          this.showFirebase = false;
 
           // Pre-fill username if it exists
           if (data.user && data.user.username) {
@@ -118,6 +120,7 @@ export default {
           localStorage.setItem('householdId', data.user.household_id);
 
           this.$router.push('/');
+          this.showFirebase = false;
         }
 
       } catch (error) {
@@ -134,6 +137,7 @@ export default {
       },
 
     showJoinHouseholdInput() {
+      this.showFirebase = false;
       this.showHouseholdOption = false;
       this.showHouseholdInput = 'join';
 

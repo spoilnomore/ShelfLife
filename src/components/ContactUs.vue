@@ -15,6 +15,7 @@
         </ul>
       </div>
     </div>
+    <div :class="end"></div>
   </template>
   
   <script>
@@ -29,6 +30,7 @@
     max-width: 600px;
     margin: 0 auto;
     display: flex;
+    height: 80vh;
     flex-grow: 1;
   }
 
@@ -38,6 +40,11 @@
     text-align: center;
   }
   
+  .end {
+    display: flex;
+    flex-grow: 1;
+  }
+
   h1 {
     margin-bottom: 20px;
     align-items: center;
