@@ -49,6 +49,13 @@ VUE_APP_FIREBASE_STORAGE_BUCKET=fillmeout
 VUE_APP_FIREBASE_MESSAGING_SENDER_ID=fillmeout
 VUE_APP_FIREBASE_APP_ID=fillmeout
 VUE_APP_FIREBASE_MEASUREMENT_ID=fillmeout
+
+MAIL_SERVER=smtp.youremailprovider.com
+MAIL_PORT=587
+MAIL_USE_TLS=True
+MAIL_USERNAME=fillmeout
+MAIL_PASSWORD=fillmeout
+MAIL_DEFAULT_SENDER=fillmeout@yep.com
 ```
 
 Just replace the `fillmeout` with the values.
@@ -56,13 +63,12 @@ Just replace the `fillmeout` with the values.
 ## Running
 
 ```bash
-cd db
-make
-cd ../backend 
-make
-cd ..
 make
 ```
+
+...yep.
+its that easy ..
+if youre on windows then you need chocolatey for `choco install make`.. and docker
 
 ## Lessons Learned
 

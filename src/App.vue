@@ -1,57 +1,74 @@
 <template>
   <div id="app" :class="theme">
     <!-- Main Content -->
-      <main class="main-content">
-          <div id="header">
-              <b-navbar toggleable="lg"
-                        :style="{backgroundColor: `var(--${theme}-navbar-background)`,
-                    color: `var(--${theme}-navbar-text-color)`,
-          }">
-                  <b-navbar-brand to="/">
-                      <font-awesome-icon icon="kitchen-set" style="padding-left: 10px;" /> ShelfLife
-                  </b-navbar-brand>
+    <main class="main-content">
+      <div id="header">
+        <b-navbar toggleable="lg"
+                  :style="{
+                    backgroundColor: `var(--${theme}-navbar-background)`,
+                    color: `var(--${theme}-navbar-text-color)`
+                  }">
+          <b-navbar-brand to="/">
+            <font-awesome-icon icon="kitchen-set" style="padding-left: 10px;" /> ShelfLife
+          </b-navbar-brand>
 
-                  <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+          <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-                  <b-collapse id="nav-collapse" is-nav>
-                      <b-navbar-nav class="me-auto">
-                          <b-nav-item v-if="loggedInUser" to="/">View Foods</b-nav-item>
-                          <b-nav-item v-if="loggedInUser" to="/add">Add Food</b-nav-item>
-                      </b-navbar-nav>
-                  </b-collapse>
+          <b-collapse id="nav-collapse" is-nav>
+            <b-navbar-nav class="me-auto">
+              <b-nav-item v-if="loggedInUser" to="/">View Foods</b-nav-item>
+              <b-nav-item v-if="loggedInUser" to="/add">Add Food</b-nav-item>
+            </b-navbar-nav>
 
-                  <b-navbar-nav class="ml-auto">
-                      <b-nav-item v-if="loggedInUser">
-                          <span class="nav-link">Hi, {{ loggedInUser }}</span>
-                          <b-button variant="link" @click="logout">Sign Out</b-button>
-                      </b-nav-item>
-                      <b-nav-item v-else to="/login">Login</b-nav-item>
-                      <b-nav-item>
-                          <b-button variant="link" @click="toggleTheme">
-                              <font-awesome-icon :icon="theme === 'dark' ? faSun : faMoon" />
-                          </b-button>
-                      </b-nav-item>
-                  </b-navbar-nav>
-              </b-navbar>
-          </div>
-          <router-view />
-          <div id="footer">
-              <b-navbar toggleable="lg"
-                        :style="{backgroundColor: `var(--${theme}-navbar-background)`,
-                  color: `var(--${theme}-navbar-text-color)`,
-           }">
+            <!-- Right-aligned Navbar Items -->
+            <b-navbar-nav class="ml-auto">
+              <!-- Send Reminders Button -->
+              <b-nav-item v-if="loggedInUser">
+                <b-button variant="warning" @click="sendReminders">Send Reminders</b-button>
+              </b-nav-item>
 
-                  <b-navbar-nav class="footer-links">
-                      <b-nav-item to="/help">Help</b-nav-item>
-                      <b-nav-item to="/contact">Contact</b-nav-item>
-                      <b-nav-item to="/faq">FAQ</b-nav-item>
-                      <b-nav-item to="/about">About Us</b-nav-item>
-                  </b-navbar-nav>
-              </b-navbar>
-          </div>
-      </main>
+              <!-- User Greeting and Logout -->
+              <b-nav-item v-if="loggedInUser">
+                <span class="nav-link">Hi, {{ loggedInUser }}</span>
+                <b-button variant="link" @click="logout">Sign Out</b-button>
+              </b-nav-item>
+
+              <!-- Login Link -->
+              <b-nav-item v-else to="/login">Login</b-nav-item>
+
+              <!-- Theme Toggle Button -->
+              <b-nav-item>
+                <b-button variant="link" @click="toggleTheme">
+                  <font-awesome-icon :icon="theme === 'dark' ? faSun : faMoon" />
+                </b-button>
+              </b-nav-item>
+            </b-navbar-nav>
+          </b-collapse>
+        </b-navbar>
+      </div>
+
+      <router-view />
+
+      <!-- Footer -->
+      <div id="footer">
+        <b-navbar toggleable="lg"
+                  :style="{
+                    backgroundColor: `var(--${theme}-navbar-background)`,
+                    color: `var(--${theme}-navbar-text-color)`
+                  }">
+
+          <b-navbar-nav class="footer-links">
+            <b-nav-item to="/help">Help</b-nav-item>
+            <b-nav-item to="/contact">Contact</b-nav-item>
+            <b-nav-item to="/faq">FAQ</b-nav-item>
+            <b-nav-item to="/about">About Us</b-nav-item>
+          </b-navbar-nav>
+        </b-navbar>
+      </div>
+    </main>
   </div>
 </template>
+
 
 <script>
 import { faSun, faMoon, faKitchenSet } from '@fortawesome/free-solid-svg-icons';
@@ -68,7 +85,7 @@ export default {
       faKitchenSet,
       loggedInUser: null,
     };
-  }, 
+  },
   methods: {
     toggleTheme() {
       this.theme = this.theme === 'dark' ? 'light' : 'dark';
@@ -83,30 +100,59 @@ export default {
         console.error('Error signing out:', error);
       }
     },
+    async sendReminders() {
+      try {
+        const idToken = await auth.currentUser.getIdToken();
 
-  }, //hello
+        const response = await fetch('http://localhost:8081/send-reminders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert(data.message);
+        } else {
+          alert(`Error: ${data.error || 'Unable to send reminders'}`);
+        }
+      } catch (error) {
+        console.error('Error sending reminders:', error);
+        alert('An error occurred while sending reminders.');
+      }
+    },
+  },
   created() {
     this.theme = 'dark'; // Set initial theme
     this.loggedInUser = localStorage.getItem('loggedInUser');
 
-  // Listen for auth state changes
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // Firebase user is logged in
-      this.loggedInUser = user.displayName;
-      localStorage.setItem('loggedInUser', user.displayName);
-    } else {
-      // User is logged out
-      this.loggedInUser = null;
-      localStorage.removeItem('loggedInUser');
-      localStorage.removeItem('userHouseholdName');
-      localStorage.removeItem('householdId');
-    }
-  });
+    // Listen for auth state changes
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Firebase user is logged in
+        this.loggedInUser = user.displayName;
+        localStorage.setItem('loggedInUser', user.displayName);
 
+        // Optionally, get and store the access token for authenticated requests
+        user.getIdToken().then((token) => {
+          localStorage.setItem('accessToken', token);
+        });
+      } else {
+        // User is logged out
+        this.loggedInUser = null;
+        localStorage.removeItem('loggedInUser');
+        localStorage.removeItem('accessToken'); // Remove access token
+        localStorage.removeItem('userHouseholdName');
+        localStorage.removeItem('householdId');
+      }
+    });
   },
 };
 </script>
+
 
 
 <style>

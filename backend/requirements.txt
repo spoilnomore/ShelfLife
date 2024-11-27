@@ -4,3 +4,11 @@ psycopg2-binary
 waitress
 emoji
 flask-cors
+gunicorn
+Flask-Mail
+Flask-APScheduler
+python-dotenv
+celery
+redis
+pyjwt[crypto]
+requests
