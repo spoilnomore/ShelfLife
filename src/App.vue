@@ -239,15 +239,11 @@ export default {
     min-height: 100vh; /*92.75*/
 }
 
-.footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
+#footer {
     width: 100%;
     background-color: var(--footer-background-color, #f8f9fa);
     color: var(--footer-text-color, #333);
-    display: flex;
-    justify-content: center;
+    margin-top: auto;
 }
 
 .footer-links {
