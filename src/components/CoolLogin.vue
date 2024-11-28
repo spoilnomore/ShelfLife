@@ -155,12 +155,10 @@ export default {
         method: 'GET',
       });
       const data = await response.json();
-      console.log('Fetched households:', data);
       this.householdOptions = data.map(household => ({
         value: household.id,
         text: household.name || household.household_name,
       }));
-      console.log('Household options:', this.householdOptions);
 
       // Update householdsAvailable based on fetched data
       this.householdsAvailable = this.householdOptions.length > 0;
@@ -185,8 +183,6 @@ export default {
       create_new_household: createNewHousehold,
     };
 
-    console.log('Payload:', payload);
-
       try {
         const response = await fetch('http://localhost:8081/create-user', {
           method: 'POST',
@@ -197,7 +193,7 @@ export default {
         });
 
         const data = await response.json();
-        console.log('Response:', data); // Log response for debugging
+
         if (data.error) {
           alert(data.error);
           return;

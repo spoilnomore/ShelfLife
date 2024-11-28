@@ -100,9 +100,6 @@ export default {
     ? (food.image_location.startsWith('http') ? food.image_location : `${serverUrl}/uploads/${food.image_location}`)
     : null,
 }));
-
-    // Debugging: Log the transformed foods array
-    console.log('Fetched foods (mapped):', this.foods);
   } catch (error) {
     console.error('Error fetching foods:', error);
   }
