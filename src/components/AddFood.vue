@@ -82,38 +82,49 @@ export default {
             this.newFood.image = e.target.files[0];
         },
         async addFood() {
-            this.isUploading = true;
-            let formData = new FormData();
-            Object.keys(this.newFood).forEach(key => {
-                formData.append(key, this.newFood[key]);
-            });
+            try {
+                this.isUploading = true;
 
+                const formData = new FormData();
+                Object.keys(this.newFood).forEach((key) => {
+                    formData.append(key, this.newFood[key]);
+                });
 
-            // Append household_id from localStorage
-            const householdId = localStorage.getItem('householdId');
-            if (!householdId) {
-                throw new Error('Household ID is missing. Please try logging in again.');
-            }
-            formData.append('household_id', householdId);
-
-            await axios.post('http://localhost:8081/foodAdd', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+                // Append household ID
+                const householdId = localStorage.getItem('householdId');
+                if (!householdId) {
+                    alert('Household ID is missing. Please try logging in again.');
+                    return;
                 }
-            });
-            window.alert('mmm ShelfLife appreciates your delectable food');
+                formData.append('household_id', householdId);
 
-            // Reset the form
+                // Post to the server
+                await axios.post('http://localhost:8081/foodAdd', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                alert('Food item added successfully!');
+                this.resetForm();
+            } catch (error) {
+                console.error('Error adding food:', error);
+                alert('Failed to add food. Please try again.');
+            } finally {
+                this.isUploading = false;
+            }
+        },
+
+        resetForm() {
             this.newFood = {
                 title: '',
                 location: '',
                 owner: 'Unknown',
                 expiration_date: '',
                 sharing: 'Unknown',
-                image: null
+                image: null,
             };
-            this.$refs.fileInput.value = ''; // Clear the file input field
-            this.isUploading = false;
+            this.$refs.fileInput.value = ''; // Clear file input
         },
         async fetchHouseholdMembers() {
             const householdId = localStorage.getItem('householdId');

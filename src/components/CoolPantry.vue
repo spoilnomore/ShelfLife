@@ -16,6 +16,16 @@
           {{ data.item.sharing }}
         </span>
       </template>
+
+      <template #cell(image)="data">
+        <div v-if="data.item.image">
+          <img :src="data.item.image" alt="Food Image" class="food-image" />
+        </div>
+        <div v-else>
+          <span>No Image</span>
+        </div>
+      </template>
+
       <template #cell(actions)="data">
         <b-button variant="danger" size="sm" @click="deleteFood(data.item.id, data.item.title)">Delete</b-button>
       </template>
@@ -45,6 +55,7 @@ export default {
         { key: 'owner', label: 'Owner' },
         { key: 'expiration_date', label: 'Expiration Date' },
         { key: 'sharing', label: 'Sharing' },
+        { key: 'image', label: 'Image' },
         { key: 'actions', label: 'Actions' },
       ],
     };
@@ -71,20 +82,32 @@ export default {
   methods: {
     // Fetch all food items from the backend
     async fetchFoods() {
-      const householdId = localStorage.getItem('householdId');
-      if (!householdId) {
-        console.error('householdId is missing in localStorage');
-        return;
-      }
+  const householdId = localStorage.getItem('householdId');
+  if (!householdId) {
+    console.error('householdId is missing in localStorage');
+    return;
+  }
 
-      try {
-        const response = await fetch(`http://localhost:8081/foods?household_id=${householdId}`);
-        const data = await response.json();
-        this.foods = data;
-      } catch (error) {
-        console.error('Error fetching foods:', error);
-      }
-    },
+  try {
+    const response = await fetch(`http://localhost:8081/foods?household_id=${householdId}`);
+    const data = await response.json();
+
+    // Prepend server URL to image paths
+    const serverUrl = process.env.VUE_APP_SERVER_URL || 'http://localhost:8081';
+    this.foods = data.map(food => ({
+  ...food,
+  image: food.image_location
+    ? (food.image_location.startsWith('http') ? food.image_location : `${serverUrl}/uploads/${food.image_location}`)
+    : null,
+}));
+
+    // Debugging: Log the transformed foods array
+    console.log('Fetched foods (mapped):', this.foods);
+  } catch (error) {
+    console.error('Error fetching foods:', error);
+  }
+}
+    ,
     // Format date to make it more readable
     formatDate(dateString) {
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -150,5 +173,13 @@ export default {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.food-image {
+  max-width: 100px; /* Limit the width */
+  max-height: 100px; /* Limit the height */
+  object-fit: cover; /* Keep aspect ratio */
+  border-radius: 4px; /* Optional: Add rounded corners */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Optional: Add a slight shadow */
 }
 </style>

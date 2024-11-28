@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from models import db
 from models.food import Food  
 import os
+from flask import send_from_directory
+
 
 food_bp = Blueprint('food', __name__)
 
@@ -13,8 +15,10 @@ def food_add():
         owner = request.form.get('owner')
         expiration_date = request.form.get('expiration_date')
         sharing = request.form.get('sharing')
-        image = request.files.get('image')  # Retrieve the file
         household_id = request.form.get('household_id')
+
+        # Get the file
+        image = request.files.get('image')
 
         if not household_id:
             return jsonify({"error": "household_id is required"}), 400
@@ -25,8 +29,8 @@ def food_add():
         # Save image to file system if provided
         image_path = None
         if image:
-            image_folder = 'uploads'
-            os.makedirs(image_folder, exist_ok=True)
+            image_folder = os.path.join(os.getcwd(), 'uploads')  # Absolute path to 'uploads'
+            os.makedirs(image_folder, exist_ok=True)  # Ensure folder exists
             image_path = os.path.join(image_folder, image.filename)
             image.save(image_path)
 
@@ -46,7 +50,7 @@ def food_add():
         return jsonify({"message": "Food item added successfully"}), 201
     except Exception as e:
         print(f"Error adding food: {e}")
-        return jsonify({"error": f"Failed to food item {e}"}), 500
+        return jsonify({"error": f"Failed to add food item: {e}"}), 500
 
 
 @food_bp.route('/foods', methods=['GET'])
@@ -63,7 +67,8 @@ def get_foods():
         "owner": food.owner,
         "expiration_date": food.expiration_date.isoformat(),
         "sharing": food.sharing,
-        "image_location": food.image_path.split('/')[-1] if food.image_path else None  # Send just the image filename
+        "image_location": f"http://localhost:8081/uploads/{food.image_path.split('/')[-1]}" if food.image_path else None
+
     } for food in foods]
     return jsonify(food_data)
 
@@ -83,3 +88,9 @@ def delete_food(food_id):
     db.session.delete(food)
     db.session.commit()
     return jsonify({"message": "Food item deleted successfully"}), 200
+
+
+@food_bp.route('/uploads/<path:filename>', methods=['GET'])
+def serve_upload(filename):
+    uploads_dir = os.path.join(os.getcwd(), 'uploads')  # Absolute path to 'uploads'
+    return send_from_directory(uploads_dir, filename)

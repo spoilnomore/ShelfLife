@@ -7,6 +7,8 @@ from celery import Celery
 from celery.schedules import crontab
 from dotenv import load_dotenv
 import logging
+from flask import send_from_directory
+
 
 # Configure logging
 logging.basicConfig(
