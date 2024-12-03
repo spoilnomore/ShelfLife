@@ -24,7 +24,11 @@
             <b-navbar-nav class="ml-auto">
               <!-- Send Reminders Button -->
               <b-nav-item v-if="loggedInUser">
-                <b-button variant="warning" @click="sendReminders">Send Reminders</b-button>
+                <div>
+                  <span class="ml-2">Send Reminders</span><br>
+                  <font-awesome-icon :icon="toggle ? faToggleOn : faToggleOff" class="toggle-icon"
+                  @click="handleToggle"/>            
+                </div>
               </b-nav-item>
 
               <!-- User Greeting and Logout -->
@@ -70,9 +74,10 @@
 
 
 <script>
-import { faSun, faMoon, faKitchenSet } from '@fortawesome/free-solid-svg-icons';
+import { faSun, faMoon, faKitchenSet, faToggleOn, faToggleOff } from '@fortawesome/free-solid-svg-icons';
 import { auth } from './firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { ref } from 'vue'
 
 export default {
   name: 'App',
@@ -81,8 +86,74 @@ export default {
       theme: 'light',
       faSun,
       faMoon,
+      faToggleOn,
+      faToggleOff,
       faKitchenSet,
       loggedInUser: null,
+    };
+  },
+  setup() {
+    const toggle = ref(false); // State for the toggle
+    const isSending = ref(false); // State to track sending process
+    const toggleIcon = ref(faToggleOff);
+
+    const handleToggle = async () => {
+      toggle.value = !toggle.value; // Toggle the state
+      if (toggle.value) {
+        toggleIcon.value = faToggleOn;
+        sendReminders();
+      } else {
+        toggleIcon.value = faToggleOff;
+        isSending.value = false; // Stop sending if toggled off
+      }
+    };
+    const sendReminders = async () => {
+      isSending.value = true;
+      try {
+        const idToken = await auth.currentUser.getIdToken();
+
+        if (!isSending.value) {
+          console.log('Sending reminders canceled.');
+          toggleIcon.value = faToggleOff;
+          return; // Exit early if toggled off
+        }
+
+        const response = await fetch('http://localhost:8081/send-reminders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`,
+          },
+        });
+
+        if (!isSending.value) {
+          console.log('Sending reminder emails canceled during request.');
+          return; // Exit early if toggled off
+        }
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert("Thank you for signing up for reminder emails!");
+        } else {
+          alert(`Error: ${data.error || 'Unable to send reminders'}`);
+          toggleIcon.value = faToggleOff;
+          isSending.value = false; // Reset sending state
+        }
+      } catch (error) {
+        if (isSending.value) {
+          console.error('Error sending reminders:', error);
+          alert('An error occurred while sending reminders.');
+          toggleIcon.value = faToggleOff;
+          isSending.value = false; // Reset sending state
+        }
+      }
+    };
+
+    return {
+      toggle,
+      toggleIcon,
+      handleToggle,
     };
   },
   methods: {
@@ -99,30 +170,36 @@ export default {
         console.error('Error signing out:', error);
       }
     },
-    async sendReminders() {
-      try {
-        const idToken = await auth.currentUser.getIdToken();
+    // async handleToggle(value) {
+    //   if (value) {
+    //     this.sendReminders();
+    //   }
+    // },
+    // async sendReminders() {
+    //   const switchValue = ref(true)
+    //   try {
+    //     const idToken = await auth.currentUser.getIdToken();
 
-        const response = await fetch('http://localhost:8081/send-reminders', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${idToken}`,
-          },
-        });
+    //     const response = await fetch('http://localhost:8081/send-reminders', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': `Bearer ${idToken}`,
+    //       },
+    //     });
 
-        const data = await response.json();
+    //     const data = await response.json();
 
-        if (response.ok) {
-          alert(data.message);
-        } else {
-          alert(`Error: ${data.error || 'Unable to send reminders'}`);
-        }
-      } catch (error) {
-        console.error('Error sending reminders:', error);
-        alert('An error occurred while sending reminders.');
-      }
-    },
+    //     if (response.ok) {
+    //       alert(data.message);
+    //     } else {
+    //       alert(`Error: ${data.error || 'Unable to send reminders'}`);
+    //     }
+    //   } catch (error) {
+    //     console.error('Error sending reminders:', error);
+    //     alert('An error occurred while sending reminders.');
+    //   }
+    // },
   },
   created() {
     this.theme = 'dark'; // Set initial theme
@@ -215,6 +292,18 @@ export default {
   border-radius: 50%;
   padding: 2px 8px;
 }
+
+.toggle-icon {
+  cursor: pointer;
+  transition: color 0.3s ease;
+  font-size: 2rem;
+  transform: translateX(40px);
+}
+
+.ml-2 {
+  margin-left: 0.1rem; /* Adjust margin between the icon and text */
+}
+
 .navbar-toggler {
     color: var(--light-navbar-toggler-color);
 }
