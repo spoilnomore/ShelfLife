@@ -1,10 +1,15 @@
 # ShelfLife
 
-You need to set up a Firebase project on Google
-and enable Google authentication.
+This application helps you keep track of the food in your pantry.
 
-**SpoilNoMore developers: please just use the .env that i
-gave you in the discord chat. do not listen to this.**
+ShelfLife is a scalable application that allows for multiple
+households to sign up and share food entries with each other.
+Each household only sees their own food.
+
+To run this application, you need to set up a Firebase project 
+on Google and enable Google authentication. You also need
+Docker and you need `make` if you are on Windows (just use
+chocolatey and do `choco install make`).
 
 heres what GPT said so you dont have to waste
 another water bottle asking it for a response.. ;)
