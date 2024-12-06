@@ -1,72 +1,103 @@
-# Project Overview: ShelfLife
+Project Overview: ShelfLife
+1. Introduction
+ShelfLife is a user-friendly, innovative application designed to assist users in efficiently tracking the expiration dates of their personal items, including food, medicine, and other perishable goods. With ShelfLife, users can ensure timely consumption, reduce waste, and maintain a well-organized inventory. The project leverages cutting-edge web technologies to provide a seamless and intuitive user experience.
 
-## 1. Introduction
-ShelfLife is a user-friendly application designed to help users track the expiration dates of their items, such as food, medicine, and other perishable goods. The project leverages modern web technologies to provide a seamless user experience.
+The goal of ShelfLife is to bridge the gap between manual inventory management and automated solutions. By incorporating reminders, analytics, and a robust architecture, ShelfLife not only simplifies day-to-day tracking but also introduces features that encourage sustainable consumption habits. The project emphasizes accessibility, scalability, and performance to cater to a diverse user base, ranging from individuals to small businesses.
 
----
+2. Requirements
+Functional Requirements
+Users must be able to register, log in, and log out securely using encrypted authentication mechanisms.
+The application must allow users to add items to their inventory with fields such as:
+Name
+Category (e.g., food, medicine)
+Expiration date
+Quantity
+Notes
+Users must be able to edit or delete existing items in the inventory.
+The application must send timely reminders for items approaching their expiration date.
+Users should be able to customize notification preferences (e.g., email, SMS, or in-app).
+The application must include a search and filter feature to help users sort and find items easily.
+Non-functional Requirements
+The app should maintain a response time of fewer than 2 seconds under normal load.
+The application must support at least 10,000 active users concurrently without performance degradation.
+The system should ensure data integrity and security by employing:
+Encrypted database storage
+Role-based access control
+The UI must be responsive and adaptive for use on both desktop and mobile devices.
+The application should be deployable across various environments using Docker containers.
+3. Architecture
+ShelfLife’s architecture is designed to be modular, scalable, and maintainable. The application employs a three-tier architecture:
 
-## 2. Requirements
-### Functional Requirements
-1. Users can create an account and log in securely.
-2. Items can be added, edited, or deleted from the inventory.
-3. Expiration dates are tracked, with reminders sent via notifications.
+Frontend:
 
-### Non-functional Requirements
-1. The app should respond within 2 seconds under normal load.
-2. It should support at least 10,000 active users simultaneously.
+Developed using Vue.js to create dynamic and responsive user interfaces.
+Integration with Bootstrap for a clean, consistent design.
+Font Awesome icons enhance visual clarity and improve the user experience.
+Backend:
 
----
+Flask serves as the core framework for API development, providing endpoints for user actions, inventory management, and notifications.
+Implements secure authentication using libraries like Flask-Security.
+Database:
 
-## 3. Architecture
-ShelfLife employs the following architecture:
-- **Frontend**: Vue.js framework for dynamic and responsive UI.
-- **Backend**: Flask for handling API requests and database interactions.
-- **Database**: PostgreSQL for storing user data and item information.
-- **Testing**: A QA framework with automated unit and integration tests.
-- **CI/CD**: Continuous Integration with GitHub Actions.
+PostgreSQL serves as the database, optimized for structured and efficient storage of user data and inventory items.
+Includes features like indexing for faster search queries.
+Testing:
 
----
+A comprehensive QA framework built using Pytest ensures the reliability of individual components and the overall system.
+Automated tests for API endpoints, database transactions, and UI interactions.
+Continuous Integration/Continuous Deployment (CI/CD):
 
-## 4. Features
-1. **Inventory Management**:
-   - Add items with details like name, category, and expiration date.
-   - Edit or delete items as needed.
+GitHub Actions is used to automate the build and deployment pipeline.
+Docker containers streamline environment consistency across development, testing, and production.
+4. Features
+Inventory Management
+Users can add, edit, and delete items in their inventory.
+Categorization of items by type (e.g., food, medicine).
+Real-time updates to the inventory display as changes are made.
+Notifications
+Customizable reminders for items approaching expiration.
+Notifications sent via email, SMS, or in-app alerts based on user preference.
+Dashboard widgets summarizing critical items requiring attention.
+Analytics
+Visual trends showing expired vs. consumed items over time.
+Categorized insights into inventory usage for different item types.
+Detailed statistics on waste reduction achieved through timely reminders.
+5. Development Breakdown
+Frontend
+Contributions:
+Developed by Tomas Chavarria using Vue.js.
+Implemented the inventory dashboard and user settings interface.
+Ensured responsiveness across devices using Bootstrap.
+Backend
+Contributions:
+Mikhail Vorotnikov implemented Flask API endpoints for CRUD operations.
+Integrated PostgreSQL for secure and efficient data storage.
+Added support for role-based access control and secure authentication.
+Testing
+Contributions:
+Led by Alejandro, who developed automated test suites for key modules.
+Performed manual debugging of database integration and front-end-backend communication issues.
+Identified and resolved over 30 critical bugs during QA.
+Documentation
+Contributions:
+Authored by Alejandro, including detailed README updates.
+Created diagrams illustrating system architecture and workflows.
+Prepared user guides for onboarding and system usage.
+6. Deployment
+ShelfLife is containerized using Docker, allowing consistent deployment across development, staging, and production environments. The CI/CD pipeline ensures:
 
-2. **Notifications**:
-   - Reminders for items nearing expiration.
-   - Customizable notification settings.
+Automatic builds and tests upon each code push to the repository.
+Seamless deployment to staging and production servers.
+GitHub Actions facilitates integration with Docker Hub for image management, ensuring scalability and reliability.
 
-3. **Analytics**:
-   - View trends in expired vs. consumed items.
-   - Categorized insights into inventory usage.
-
----
-
-## 5. Development Breakdown
-### Contributions
-- **Frontend**:
-  - Developed by Tomas Chavarria using Vue.js and Bootstrap.
-  - Integrated icons using Font Awesome.
-
-- **Backend**:
-  - Mikhail Vorotnikov implemented the Flask-based API logic.
-  - Includes features like secure authentication and optimized database queries.
-
-- **Testing**:
-  - Led by Alejandro, focusing on creating a robust QA framework.
-  - Debugged database integration and API routes.
-
-- **Documentation**:
-  - README updates and comprehensive project documentation by Alejandro.
-
----
-
-## 6. Deployment
-The project is containerized using Docker for easy deployment. GitHub Actions ensure continuous integration and deployment with minimal manual intervention.
-
----
-
-## 7. Future Improvements
-1. Add multilingual support for a global user base.
-2. Include a mobile version for better accessibility.
-3. Implement AI-based predictions for item expiration trends.
+7. Future Improvements
+Planned Enhancements
+Localization: Add multilingual support for non-English-speaking users.
+Mobile Application: Develop a native mobile app for iOS and Android to improve accessibility.
+AI Integration:
+Implement predictive analytics to suggest optimal consumption patterns.
+Use machine learning to identify trends in user inventory data.
+Potential Features
+Integration with grocery delivery APIs for automated restocking suggestions.
+Advanced analytics dashboards for small businesses managing inventory.
+Support for team-based inventory management (e.g., for families or roommates).
