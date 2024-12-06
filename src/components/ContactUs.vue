@@ -6,7 +6,7 @@
         <p>We’d love to hear from you! If you have any questions, feedback, or suggestions, please reach out using the contact information below.</p> 
         <br>
         <ul>
-          <li>Email: <a href="mailto:spoilnomore@hotmail.gov">spoilnomore@hotmail.gov</a></li>
+          <li>Email: <a href="mailto:shelflife.spoilnomore@gmail.com">shelflife.spoilnomore@gmail.com</a></li>
           <li>Phone: <a href="tel:+1234567890">+1 (234) 567-890</a></li>
           <li>Address: 123 Pantry Lane, Food Town, FT 12345</li>
         </ul>
