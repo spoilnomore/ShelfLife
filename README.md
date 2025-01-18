@@ -12,7 +12,7 @@ Docker and you need `make` if you are on Windows (just use
 chocolatey and do `choco install make`).
 
 heres what GPT said so you dont have to waste
-another water bottle asking it for a response.. ;)
+another water bottle asking it for a response... ;)
 
 ## Google authentication setup
 
