@@ -92,6 +92,13 @@ export default {
         const google_id = user.uid;
         const email = user.email;
 
+        // Validate the email domain (only allow @ufl.edu)
+        if (!email.endsWith("@ufl.edu")) {
+          alert("sorry...... gator fans only");
+          await auth.signOut(); // Sign the user out if they don't meet the condition
+          return;
+        }
+
         // Call backend to check if user exists
         const response = await fetch('http://localhost:8081/check-user', {
           method: 'POST',
